@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TesteKeyworks.Models.ViewModels;
+﻿using TesteKeyworks.Models.ViewModels;
 
 namespace TesteKeyworks.Models
 {
@@ -14,6 +13,7 @@ namespace TesteKeyworks.Models
         public static implicit operator Avaliacao(AvaliacaoView view)
             => new()
             {
+                Id = view.Id ?? Guid.Empty,
                 Nota = view.Nota,
                 Comentario = view.Comentario,
                 FilmeId = view.FilmeId  

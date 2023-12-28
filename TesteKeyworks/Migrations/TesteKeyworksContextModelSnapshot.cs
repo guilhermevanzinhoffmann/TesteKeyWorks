@@ -91,9 +91,13 @@ namespace TesteKeyworks.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Nome")
+                        .IsUnique()
+                        .HasFilter("[Nome] IS NOT NULL");
 
                     b.ToTable("Streaming");
                 });

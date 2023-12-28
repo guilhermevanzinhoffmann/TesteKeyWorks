@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TesteKeyworks.Models;
 using TesteKeyworks.Models.Paginacao;
 using TesteKeyworks.Models.ViewModels;
@@ -46,6 +47,8 @@ namespace TesteKeyworks.Controllers
                 return NotFound();
             }
 
+            ViewData["totalFilmes"] = streaming.Filmes.Count;
+
             return View(streaming);
         }
 
@@ -64,8 +67,29 @@ namespace TesteKeyworks.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(view.Nome))
+                {
+                    ModelState.AddModelError("Nome", "O campo Nome é obrigatório.");
+                    return View(view);
+                }
+
                 Streaming streaming = view;
-                await _service.AddAsync(streaming);
+
+                try
+                {
+                    await _service.AddAsync(streaming);
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException is SqlException sqlException && sqlException.Number == 2601)
+                    {
+                        ModelState.AddModelError("Nome", "O nome do streaming já existe. Por favor, escolha outro nome.");
+                        return View(view);
+                    }
+                    throw;
+                }
+                
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(view);
@@ -79,12 +103,12 @@ namespace TesteKeyworks.Controllers
                 return NotFound();
             }
 
-            var streaming = await _service.GetByIdAsync(id.Value);
+            StreamingView streaming = await _service.GetByIdAsync(id.Value);
             if (streaming == null)
             {
                 return NotFound();
             }
-            return View((StreamingView)streaming);
+            return View(streaming);
         }
 
         // POST: Streamings/Edit/5
@@ -101,21 +125,23 @@ namespace TesteKeyworks.Controllers
 
             if (ModelState.IsValid)
             {
+                if (string.IsNullOrEmpty(streaming.Nome))
+                {
+                    ModelState.AddModelError("Nome", "O campo Nome é obrigatório.");
+                    return View(streaming);
+                }
                 try
                 {
                     await _service.UpdateAsync(streaming);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException ex)
                 {
-                    var streamingExistente = await _service.GetByIdAsync(streaming.Id ?? Guid.Empty);
-                    if (streamingExistente == null)
+                    if (ex.InnerException is SqlException sqlException && sqlException.Number == 2601)
                     {
-                        return NotFound();
+                        ModelState.AddModelError("Nome", "O nome do streaming já existe. Por favor, escolha outro nome.");
+                        return View(streaming);
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

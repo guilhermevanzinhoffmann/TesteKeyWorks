@@ -8,13 +8,13 @@
 <h1>Filmes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Cadastrar filme</a>
 </p>
 <br/>
 
 <form asp-controller="Filmes" asp-action="Index" asp-route-page="@Model.PageIndex" method="get">
     <p>
-        Nome: <input type="text" id="titulo" name="titulo" asp-for="@ViewData["Titulo"]" />
+        Título: <input type="text" id="titulo" name="titulo" asp-for="@ViewData["Titulo"]" />
         
         <select asp-items="@ViewBag.generos" name="genero" asp-for="@ViewData["genero"]">
             <option value="">Todos os gêneros</option>
@@ -69,10 +69,9 @@
                     }
             </td>
             <td>
-
-                <a asp-action="Edit" asp-route-id="@item.Id" asp-route-page="@Model.PageIndex">Edit</a> |
-                <a asp-action="Index" asp-controller="Avaliacoes"  asp-route-filmeId="@item.Id" asp-route-page="@Model.PageIndex">Avaliações</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Index" asp-controller="Avaliacoes" asp-route-filmeId="@item.Id" asp-route-page="@Model.PageIndex">Avaliações</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id" asp-route-page="@Model.PageIndex">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
             </td>
         </tr>
 }

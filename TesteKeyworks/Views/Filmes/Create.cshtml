@@ -16,7 +16,7 @@
                 <label asp-for="Titulo" class="control-label"></label>
                 <input asp-for="Titulo" class="form-control" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
-                <span class="text-danger">@Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })</span>
+                @* <span class="text-danger">@Html.ValidationMessageFor(model => model.Titulo, "", new { @class = "text-danger" })</span> *@
             </div>
             <div class="form-group">
                 <label asp-for="Genero" class="control-label"></label>
@@ -47,14 +47,14 @@
                 }
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar</a>
 </div>
 
 @section Scripts {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TesteKeyworks.Models;
 using TesteKeyworks.Models.Paginacao;
 using TesteKeyworks.Models.ViewModels;
@@ -99,6 +100,18 @@ namespace TesteKeyworks.Controllers
                 Filme filme = view;
                 List<Streaming> streamings = new();
 
+                if (string.IsNullOrEmpty(view.Titulo))
+                {
+                    ModelState.AddModelError("Titulo", "O campo Título é obrigatório.");
+                    return View(view);
+                }
+
+                if (string.IsNullOrEmpty(view.Genero))
+                {
+                    ModelState.AddModelError("Genero", "O campo Gênero é obrigatório.");
+                    return View(view);
+                }
+
                 foreach (var streaming in view.Streamings)
                 {
                     var streamingSelecionado = await _streamingService.GetByIdAsync(streaming.Id ?? Guid.Empty);
@@ -117,8 +130,7 @@ namespace TesteKeyworks.Controllers
                 {
                     if (ex.InnerException is SqlException sqlException && sqlException.Number == 2601)
                     {
-                        ModelState.AddModelError(string.Empty, "O nome do filme já existe. Por favor, escolha outro nome.");
-                        // Retorne a View com a mensagem de erro para o usuário corrigir
+                        ModelState.AddModelError("Titulo", "O nome do filme já existe. Por favor, escolha outro nome.");
                         return View(view);
                     }
 
@@ -191,6 +203,18 @@ namespace TesteKeyworks.Controllers
                     if(filmeAtual == null)
                         return NotFound();
 
+                    if (string.IsNullOrEmpty(filme.Titulo))
+                    {
+                        ModelState.AddModelError("Titulo", "O campo Título é obrigatório.");
+                        return View(filme);
+                    }
+
+                    if (string.IsNullOrEmpty(filme.Genero))
+                    {
+                        ModelState.AddModelError("Genero", "O campo Gênero é obrigatório.");
+                        return View(filme);
+                    }
+
                     filmeAtual.Titulo = filme.Titulo;
                     filmeAtual.DataLancamento = DateTime.Parse(filme.DataLancamento);
                     filmeAtual.Genero = filme.Genero;
@@ -209,18 +233,15 @@ namespace TesteKeyworks.Controllers
 
                     await _service.UpdateAsync(filmeAtual);    
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException ex)
                 {
-                    var filmeExistente = await _service.GetByIdAsync(id);
-                    
-                    if (filmeExistente == null)
+                    if (ex.InnerException is SqlException sqlException && sqlException.Number == 2601)
                     {
-                        return NotFound();
+                        ModelState.AddModelError("Titulo", "O nome do filme já existe. Por favor, escolha outro nome.");
+                        return View(filme);
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

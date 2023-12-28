@@ -12,8 +12,8 @@ using TesteKeyworks.Data;
 namespace TesteKeyworks.Migrations
 {
     [DbContext(typeof(TesteKeyworksContext))]
-    [Migration("20231221190241_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231228212200_InitialMIgration")]
+    partial class InitialMIgration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,17 +25,34 @@ namespace TesteKeyworks.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TesteKeyworks.Models.Filme", b =>
+            modelBuilder.Entity("TesteKeyworks.Models.Avaliacao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Avaliacao")
+                    b.Property<string>("Comentario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("FilmeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Nota")
                         .HasColumnType("int");
 
-                    b.Property<string>("ComentarioAvaliacao")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmeId");
+
+                    b.ToTable("Avaliacoess");
+                });
+
+            modelBuilder.Entity("TesteKeyworks.Models.Filme", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataLancamento")
                         .HasColumnType("datetime2");
@@ -44,9 +61,13 @@ namespace TesteKeyworks.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Titulo")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Titulo")
+                        .IsUnique()
+                        .HasFilter("[Titulo] IS NOT NULL");
 
                     b.ToTable("Filme");
                 });
@@ -73,23 +94,38 @@ namespace TesteKeyworks.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Nome")
+                        .IsUnique()
+                        .HasFilter("[Nome] IS NOT NULL");
+
                     b.ToTable("Streaming");
+                });
+
+            modelBuilder.Entity("TesteKeyworks.Models.Avaliacao", b =>
+                {
+                    b.HasOne("TesteKeyworks.Models.Filme", "Filme")
+                        .WithMany("Avaliacoes")
+                        .HasForeignKey("FilmeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Filme");
                 });
 
             modelBuilder.Entity("TesteKeyworks.Models.FilmesStreamings", b =>
                 {
                     b.HasOne("TesteKeyworks.Models.Filme", "Filme")
-                        .WithMany("FilmesStreamings")
+                        .WithMany()
                         .HasForeignKey("FilmeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TesteKeyworks.Models.Streaming", "Streaming")
-                        .WithMany("FilmesStreamings")
+                        .WithMany()
                         .HasForeignKey("StreamingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -101,12 +137,7 @@ namespace TesteKeyworks.Migrations
 
             modelBuilder.Entity("TesteKeyworks.Models.Filme", b =>
                 {
-                    b.Navigation("FilmesStreamings");
-                });
-
-            modelBuilder.Entity("TesteKeyworks.Models.Streaming", b =>
-                {
-                    b.Navigation("FilmesStreamings");
+                    b.Navigation("Avaliacoes");
                 });
 #pragma warning restore 612, 618
         }

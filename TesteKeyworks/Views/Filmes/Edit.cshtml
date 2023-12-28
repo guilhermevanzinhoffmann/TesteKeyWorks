@@ -13,17 +13,17 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Titulo" class="control-label"></label>
+                <label asp-for="Titulo" class="control-label">Título</label>
                 <input asp-for="Titulo" class="form-control" />
                 <span asp-validation-for="Titulo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genero" class="control-label"></label>
+                <label asp-for="Genero" class="control-label">Gênero</label>
                 <input asp-for="Genero" class="form-control" />
                 <span asp-validation-for="Genero" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataLancamento" class="control-label"></label>
+                <label asp-for="DataLancamento" class="control-label">Data de Lançamento</label>
                 @{
                     DateTime dataFormatada;
                     DateTime.TryParse(Model.DataLancamento, out dataFormatada);
@@ -45,14 +45,14 @@
             </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>   
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-page="@ViewData["page"]">Back to List</a>
+    <a asp-action="Index" asp-route-page="@ViewData["page"]">Voltar</a>
 </div>
 
 @section Scripts {

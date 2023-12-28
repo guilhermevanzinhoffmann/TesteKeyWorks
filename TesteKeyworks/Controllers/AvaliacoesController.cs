@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TesteKeyworks.Models;
 using TesteKeyworks.Models.Paginacao;
 using TesteKeyworks.Models.ViewModels;
@@ -66,7 +67,7 @@ namespace TesteKeyworks.Controllers
         {
             var filme = await _filmeService.GetByIdAsync(filmeId);
 
-            if (filme == null) return NotFound();
+            if (filme == null) return RedirectToAction(nameof(Index), new { habilitarBusca = true }); ;
 
             AvaliacaoView avaliacao = new();
 
@@ -124,13 +125,6 @@ namespace TesteKeyworks.Controllers
 
             if (ModelState.IsValid)
             {
-                var avaliacaoExistente = await _service.GetByIdAsync(id);
-                
-                if(avaliacaoExistente == null) return NotFound();
-
-                avaliacaoExistente.Nota = avaliacao.Nota;
-                avaliacaoExistente.Comentario = avaliacao.Comentario;
-                
                 await _service.UpdateAsync(avaliacao);
                 
                 return RedirectToAction(nameof(Index), new {filmeId = avaliacao.FilmeId});

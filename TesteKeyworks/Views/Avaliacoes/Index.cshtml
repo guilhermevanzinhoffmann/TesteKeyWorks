@@ -8,13 +8,13 @@
 <h1>Avaliação - @ViewData["TituloFilme"]</h1>
 
 <p>
-    <a asp-action="Create" asp-route-filmeId="@ViewData["FilmeId"]">Create New</a>
+    <a asp-action="Create" asp-route-filmeId="@ViewData["FilmeId"]">Criar</a>
 </p>
 <form asp-controller="Avaliacoes" asp-action="Index" method="get">
     @if (ViewData["habilitarBusca"] is bool habilitarBusca && habilitarBusca)
     {
         <p>
-            Title: <input type="text" id="tituloFilme" name="tituloFilme" />
+            Filme: <input type="text" id="tituloFilme" name="tituloFilme" />
             <input type="submit" value="Pesquisar" />
         </p>
     }
@@ -41,16 +41,16 @@
                 @Html.DisplayFor(modelItem => item.Comentario)
             </td>
             <td>
-                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Edit" asp-route-id="@item.Id" asp-route-pageIndex="@Model.PageIndex">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-habilitarBusca="@ViewData["habilitarBusca"]">Details</a> |
-                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Edit" asp-route-id="@item.Id" asp-route-pageIndex="@Model.PageIndex">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-habilitarBusca="@ViewData["habilitarBusca"]">Detalhes</a> |
+                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
 <div>
-    <a asp-action="Index" asp-controller="Filmes" asp-route-page="@ViewData["page"]">Back to List</a>
+    <a asp-action="Index" asp-controller="Filmes" asp-route-page="@ViewData["page"]">Voltar</a>
 </div>
 <br />
 @{

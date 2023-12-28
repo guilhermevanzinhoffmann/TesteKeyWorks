@@ -8,7 +8,7 @@ namespace TesteKeyworks
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<TesteKeyworksContext>(options =>
@@ -41,11 +41,22 @@ namespace TesteKeyworks
 
             app.UseAuthorization();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<TesteKeyworksContext>();
+                await dbContext.Database.MigrateAsync();
+
+                var dbInitializer = new DatabaseInitializer(scope.ServiceProvider.GetRequiredService<IServiceScopeFactory>());
+                await dbInitializer.InitializeAsync();
+            }
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Filmes}/{action=Index}/{id?}");
 
             app.Run();
         }
+
+
     }
 }

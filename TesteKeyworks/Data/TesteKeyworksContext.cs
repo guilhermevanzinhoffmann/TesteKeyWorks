@@ -29,6 +29,10 @@ namespace TesteKeyworks.Data
                 .HasMany(x => x.Streamings)
                 .WithMany(x => x.Filmes)
                 .UsingEntity<FilmesStreamings>();
+
+            modelBuilder.Entity<Streaming>()
+                .HasIndex(x => x.Nome)
+                .IsUnique();
         }
     }
 }
