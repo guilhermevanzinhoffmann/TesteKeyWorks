@@ -1,0 +1,7 @@
+﻿@model DateTime?
+
+@{
+    string value = Model?.ToString("yyyy-MM") ?? "01/2000";
+}
+
+<input asp-for="" class="form-control" type="month" value="@value" />

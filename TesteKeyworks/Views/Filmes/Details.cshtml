@@ -1,0 +1,60 @@
+﻿@model IEnumerable<TesteKeyworks.Models.ViewModels.FilmeDetalheView>
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>Detalhes</h1>
+
+<h3>Número total de filmes: @ViewData["totalFilmes"]</h3>
+<h3>Número total de gêneros: @ViewData["totalGeneros"]</h3>
+<h3>Número total de streamings: @ViewData["totalStreamings"]</h3>
+
+<br />
+<form asp-controller="Filmes" asp-action="Details" asp-route-page="@ViewData["page"]" method="get">
+    <p>
+        <select asp-items="@ViewBag.anos" name="ano" asp-for="@ViewData["ano"]">
+        </select>
+        <input type="submit" value="Pesquisar" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Gênero
+            </th>
+            <th>
+                Avaliação média
+            </th>
+            <th>
+                Ano de lançamento
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>
+                <td>
+                    @if (item.MediaAvaliacao == "0,00")
+                    {
+                        <text>Sem avaliação</text>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.MediaAvaliacao)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnoLancamento)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

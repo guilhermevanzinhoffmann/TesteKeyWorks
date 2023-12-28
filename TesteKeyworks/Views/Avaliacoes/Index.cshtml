@@ -1,0 +1,76 @@
+﻿@using TesteKeyworks.Models.Paginacao
+@model PaginatedList<TesteKeyworks.Models.ViewModels.AvaliacaoView>
+
+@{
+    ViewData["Title"] = "Avaliação";
+}
+
+<h1>Avaliação - @ViewData["TituloFilme"]</h1>
+
+<p>
+    <a asp-action="Create" asp-route-filmeId="@ViewData["FilmeId"]">Create New</a>
+</p>
+<form asp-controller="Avaliacoes" asp-action="Index" method="get">
+    @if (ViewData["habilitarBusca"] is bool habilitarBusca && habilitarBusca)
+    {
+        <p>
+            Title: <input type="text" id="tituloFilme" name="tituloFilme" />
+            <input type="submit" value="Pesquisar" />
+        </p>
+    }
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nota
+            </th>
+            <th>
+                Comentário
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comentario)
+            </td>
+            <td>
+                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Edit" asp-route-id="@item.Id" asp-route-pageIndex="@Model.PageIndex">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-habilitarBusca="@ViewData["habilitarBusca"]">Details</a> |
+                    <a hidden="@ViewData["habilitarBusca"]" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index" asp-controller="Filmes" asp-route-page="@ViewData["page"]">Back to List</a>
+</div>
+<br />
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-tituloFilme="@ViewData["TituloFilme"]"
+   asp-route-filmeId="@ViewData["FilmeId"]"
+   asp-route-habilitarBusca="@ViewData["habilitarBusca"]"
+   asp-route-pageIndex="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Anterior
+</a>
+<a asp-action="Index"
+   asp-route-tituloFilme="@ViewData["TituloFilme"]"
+   asp-route-filmeId="@ViewData["FilmeId"]"
+   asp-route-habilitarBusca="@ViewData["habilitarBusca"]"
+   asp-route-pageIndex="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Próximo
+</a>

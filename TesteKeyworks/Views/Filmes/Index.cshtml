@@ -1,0 +1,106 @@
+﻿@using TesteKeyworks.Models.Paginacao
+@model PaginatedList<TesteKeyworks.Models.ViewModels.FilmeView>
+
+@{
+    ViewData["Title"] = "Filmes";
+}
+
+<h1>Filmes</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<br/>
+
+<form asp-controller="Filmes" asp-action="Index" asp-route-page="@Model.PageIndex" method="get">
+    <p>
+        Nome: <input type="text" id="titulo" name="titulo" asp-for="@ViewData["Titulo"]" />
+        
+        <select asp-items="@ViewBag.generos" name="genero" asp-for="@ViewData["genero"]">
+            <option value="">Todos os gêneros</option>
+        </select>
+
+        <select asp-items="@ViewBag.anos" name="ano" asp-for="@ViewData["ano"]">
+            <option value="">Todos os anos</option>
+        </select>
+
+        <select asp-items="@ViewBag.streamings" name="streaming" asp-for="@ViewData["Streaming"]">
+            <option value="">Todos os streamings</option>
+        </select>
+
+        <select asp-items="@ViewBag.avaliacoes" name="avaliacao" asp-for="@ViewData["Avaliacao"]">
+            <option value="">Todas as avaliações</option>
+        </select>
+
+        <input type="submit" value="Pesquisar" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Gênero</th>
+            <th>Média de Avaliações</th>
+            <th>Data de Lançamento</th>
+            <th>Streaming</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MediaAvaliacoes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataLancamento)
+            </td>
+            <td>
+                    @foreach (var streaming in item.Streamings)
+                    {
+                        @streaming.Nome <br/>
+                    }
+            </td>
+            <td>
+
+                <a asp-action="Edit" asp-route-id="@item.Id" asp-route-page="@Model.PageIndex">Edit</a> |
+                <a asp-action="Index" asp-controller="Avaliacoes"  asp-route-filmeId="@item.Id" asp-route-page="@Model.PageIndex">Avaliações</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<a asp-action="Details" asp-route-page="@Model.PageIndex">Detalhes</a>
+<br />
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+@{
+    var genero = Context.Request.Query["genero"];
+    var ano = Context.Request.Query["ano"];
+}
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-genero="@genero"
+   asp-route-ano="@ano"
+   class="btn btn-default @prevDisabled">
+    Anterior
+</a>
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-genero="@genero"
+   asp-route-ano="@ano"
+   class="btn btn-default @nextDisabled">
+    Próximo
+</a>
+

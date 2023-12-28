@@ -1,0 +1,60 @@
+﻿@model TesteKeyworks.Models.ViewModels.FilmeView
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<h1>Editar</h1>
+
+<h4>Filme</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Genero" class="control-label"></label>
+                <input asp-for="Genero" class="form-control" />
+                <span asp-validation-for="Genero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataLancamento" class="control-label"></label>
+                @{
+                    DateTime dataFormatada;
+                    DateTime.TryParse(Model.DataLancamento, out dataFormatada);
+                    string value = dataFormatada.ToString("yyyy-MM");
+                }
+                <input asp-for="DataLancamento" class="form-control" type="month" value="@value" />
+                <span asp-validation-for="DataLancamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Streamings" class="control-label">Streamings</label>
+                @for (var i = 0; i < Model.Streamings.Count; i++)
+                {
+                    <div class="form-check">
+                        <input asp-for="@Model.Streamings[i].Selecionado" class="form-check-input" />
+                        <label class="form-check-label">@Model.Streamings[i].Nome</label>
+                        <input type="hidden" asp-for="@Model.Streamings[i].Id" />
+                    </div>
+                }
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>   
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-route-page="@ViewData["page"]">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
